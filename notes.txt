@@ -1,0 +1,28 @@
+
+
+- store the ipfs hash in localstorage
+
+- every page can just request the metadata on ipfs
+
+
+
+- create a library with some convenience hooks
+- useBrowserConfig() <-- config.json
+
+
+
+
+browserconfig.xyz
+
+- click different options, and generate the metadata automatically
+- show current config
+- some popular configs
+
+when clicking "choose config"
+- set "browserconfig" to the ipfs hash in local storage
+
+
+
+ui
+- tailwind, planetscale
+- tailwindui forms

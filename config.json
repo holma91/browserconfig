@@ -1,0 +1,30 @@
+{
+  "profile": {
+    "darkMode": true,
+    "favouriteColor": "#ff4312",
+    "font": "Inter",
+    "fontSize": "Inter",
+    "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
+    "displayName": "hassebacke",
+    "email": "hassebacke@proton.me",
+    "language": "en-US"
+  },
+  "cookies": {
+    "sessionCookies": {
+      "allow": true,
+      "exceptions": []
+    },
+    "persistentCookies": {
+      "allow": true,
+      "exceptions": ["https://facebook.com/*", "https://twitter.com/*"]
+    },
+    "firstPartyCookies": {
+      "allow": true,
+      "exceptions": []
+    },
+    "thirdPartyCookies": {
+      "allow": false,
+      "exceptions": []
+    }
+  }
+}
