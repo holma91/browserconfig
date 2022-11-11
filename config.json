@@ -1,13 +1,25 @@
 {
   "profile": {
-    "darkMode": true,
-    "favouriteColor": "#ff4312",
-    "font": "Inter",
-    "fontSize": "Inter",
-    "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
-    "displayName": "hassebacke",
-    "email": "hassebacke@proton.me",
-    "language": "en-US"
+    "preferences": {
+      "darkMode": true,
+      "font": "Inter",
+      "fontSize": "100%",
+      "language": "en-US",
+      "popups": false
+    },
+    "personal": {
+      "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
+      "firstName": "Hasse",
+      "lastName": "Backe",
+      "displayName": "hassebacke",
+      "email": "hassebacke@proton.me",
+      "phoneNumber": "132214072394"
+    },
+    "social": {
+      "twitter": "",
+      "github": "",
+      "instagram": ""
+    }
   },
   "cookies": {
     "sessionCookies": {

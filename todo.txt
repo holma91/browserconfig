@@ -1,0 +1,7 @@
+
+
+1. develop the showcase app
+2. extract the library part from it and publish on npm
+
+
+FOCUS ON VERY GOOD CODE FOR THIS PROJECT.

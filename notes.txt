@@ -10,6 +10,23 @@
 - useBrowserConfig() <-- config.json
 
 
+UI
+- on top, show different clickable hashes (with some indications on which on is active)
+- plus sign if you want to create a new config
+- form on left side (scrollable)
+- json metadata on right side (fixed)
+- "upload button" on bottom right
+
+FORM
+- Profile
+  - avatar, display name (side by side)
+  - email, language (side by side)
+
+  - dark mode, language (side by side)
+  - font, font-size (side by side)
+
+  Socials:
+    social media, username (side by side) /
 
 
 browserconfig.xyz
