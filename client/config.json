@@ -1,0 +1,26 @@
+{
+  "profile": {
+    "popups": false,
+    "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
+    "firstName": "Hasse",
+    "lastName": "Backe",
+    "displayName": "hassebacke",
+    "email": "hassebacke@proton.me",
+    "phoneNumber": "132214072394",
+    "social": {
+      "twitter": "",
+      "github": "",
+      "instagram": ""
+    }
+  },
+  "cookies": {
+    "sessionCookies": {
+      "allow": true,
+      "exceptions": []
+    },
+    "persistentCookies": {
+      "allow": true,
+      "exceptions": ["https://facebook.com/*"]
+    }
+  }
+}

@@ -17,34 +17,6 @@ const code = `export default {
   },
 }`;
 
-const code2 = `{
-  "profile": {
-    "popups": false
-    "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
-    "firstName": "Hasse",
-    "lastName": "Backe",
-    "displayName": "hassebacke",
-    "email": "hassebacke@proton.me",
-    "phoneNumber": "132214072394"
-    "social": {
-      "twitter": "",
-      "github": "",
-      "instagram": ""
-    }
-  },
-  "cookies": {
-    "sessionCookies": {
-      "allow": true,
-      "exceptions": []
-    },
-    "persistentCookies": {
-      "allow": true,
-      "exceptions": ["https://facebook.com/*"]
-    }
-  }
-}
-`;
-
 function TrafficLightsIcon(props: any) {
   return (
     <svg aria-hidden="true" viewBox="0 0 42 10" fill="none" {...props}>
@@ -74,6 +46,47 @@ function classNames(...classes: any[]) {
 
 export default function Home() {
   const active = 'aqqs...fdg2';
+  const allowPopups = true;
+
+  const code2 = `{
+    "profile": {
+      "popups": ${allowPopups},
+      "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
+      "firstName": "Hasse",
+      "lastName": "Backe",
+      "displayName": "hassebacke",
+      "email": "hassebacke@proton.me",
+      "phoneNumber": "132214072394",
+      "social": {
+        "twitter": "",
+        "github": "",
+        "instagram": ""
+      }
+    },
+    "cookies": {
+      "sessionCookies": {
+        "allow": true,
+        "exceptions": []
+      },
+      "sessionCookies": {
+        "allow": true,
+        "exceptions": []
+      },
+      "sessionCookies": {
+        "allow": true,
+        "exceptions": []
+      },
+      "sessionCookies": {
+        "allow": true,
+        "exceptions": []
+      },
+      "persistentCookies": {
+        "allow": true,
+        "exceptions": ["https://facebook.com/*"]
+      }
+    }
+  }
+  `;
 
   return (
     <div>
@@ -117,19 +130,19 @@ export default function Home() {
       <div className="py-6 top-24">
         <div className="top-24 mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-screen-2xl lg:grid-cols-12 lg:gap-8 lg:px-8">
           <div className="col-span-9 lg:col-span-6 block">
-            <div className="top-40 border p-2 h-screen overflow-y-scroll">
-              {[...new Array(350)].map((a) => (
+            <div className="top-40 border p-2 h-[40rem] overflow-y-scroll">
+              {[...new Array(75)].map((a) => (
                 <p key={a}>ya</p>
               ))}
             </div>
           </div>
-          <div className="col-span-3 lg:col-span-6 block ">
+          <div className="col-span-3 lg:col-span-6 block h-[36rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
             <div className="sticky top-40 p-2">
-              <div className="relative rounded-2xl bg-[#011627] ring-1 ring-white/10 backdrop-blur p-1">
-                <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" />
-                <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" />
-                <div className="pl-4 pt-4">
-                  <TrafficLightsIcon className="h-2.5 w-auto stroke-slate-500/30" />
+              <div className="relative rounded-2xl bg-[#011627]  backdrop-blur p-1">
+                {/* <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" /> */}
+                {/* <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" /> */}
+                <div className="pl-4">
+                  {/* <TrafficLightsIcon className="h-2.5 w-auto stroke-slate-500/30" /> */}
                   <div className="mt-6 flex items-start px-1 text-sm">
                     {/* Line numbers below */}
                     <div
