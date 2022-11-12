@@ -3,8 +3,8 @@ import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
   return (
-    <div className="border-b sticky top-0 z-10 bg-white">
-      <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
+    <div className="border-b sticky top-0 z-50 bg-white">
+      <div className="mx-auto max-w-screen-2xl px-2 sm:px-4 lg:divide-y lg:divide-gray-200 lg:px-8">
         <div className="relative flex h-16 justify-between">
           <div className="relative z-10 flex px-2 lg:px-0">
             <div className="flex flex-shrink-0 items-center">
