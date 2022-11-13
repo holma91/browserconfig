@@ -1,8 +1,56 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
+import { Switch } from '@headlessui/react';
+function classNames(...classes: any[]) {
+  return classes.filter(Boolean).join(' ');
+}
 
-export default function Form() {
+const preferencesValues = [
+  {
+    title: 'Popups',
+    description:
+      'Let websites know if you accept popups, or if you want them gone',
+    exceptionsDefault: 'facebook.com, google.com',
+    key: 'popups',
+  },
+  {
+    title: 'Dark Mode',
+    description: 'Do you prefer your websites to have dark mode on?.',
+    exceptionsDefault: '',
+    key: 'darkMode',
+  },
+  {
+    title: 'Session Cookies',
+    description: 'Do you accept the usage of session cookies?',
+    exceptionsDefault: '',
+    key: 'sessionCookies',
+  },
+  {
+    title: 'Persistent Cookies',
+    description: 'Do you accept the usage of persistent cookies?',
+    exceptionsDefault: '',
+    key: 'persistentCookies',
+  },
+  {
+    title: 'Third Party Cookies',
+    description: 'Do you accept the usage of persistent third party cookies?',
+    exceptionsDefault: '',
+    key: 'thirdPartyCookies',
+  },
+];
+
+export default function Form({
+  register,
+  preferences,
+  changePreferencesToggle,
+  changePreferencesExceptions,
+}: {
+  register: any;
+  preferences: any;
+  changePreferencesToggle: any;
+  changePreferencesExceptions: any;
+}) {
   const [showProfile, setShowProfile] = useState(true);
   const [showPersonal, setShowPersonal] = useState(true);
   const [showPreferences, setShowPreferences] = useState(true);
@@ -23,27 +71,24 @@ export default function Form() {
               )}
               <span>Profile</span>
             </h3>
-            {/* <p className="mt-1 text-sm text-gray-500">
-              This information will be displayed publicly so be careful what you
-              share.
-            </p> */}
           </div>
           {showProfile && (
             <div className="mt-6 grid grid-cols-2 gap-y-6 gap-x-4 sm:grid-cols-6">
               <div className="sm:col-span-6 grid grid-cols-6 gap-6 items-center">
                 <div className="col-span-4">
                   <label
-                    htmlFor="username"
+                    htmlFor="displayName"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Display name
                   </label>
                   <div className="mt-1 flex rounded-md shadow-sm">
                     <input
+                      {...register('displayName')}
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="displayName"
+                      id="displayName"
+                      autoComplete="displayName"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -91,10 +136,11 @@ export default function Form() {
                       <span>twitter @</span>{' '}
                     </span>
                     <input
+                      {...register('twitter')}
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="twitter"
+                      id="twitter"
+                      autoComplete="twitter"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -104,10 +150,11 @@ export default function Form() {
                       <span>github @</span>
                     </span>
                     <input
+                      {...register('github')}
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="github"
+                      id="github"
+                      autoComplete="github"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -117,10 +164,11 @@ export default function Form() {
                       <span>reddit @</span>
                     </span>
                     <input
+                      {...register('reddit')}
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="reddit"
+                      id="reddit"
+                      autoComplete="reddit"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -130,10 +178,11 @@ export default function Form() {
                       <span>ENS @</span>
                     </span>
                     <input
+                      {...register('ens')}
                       type="text"
-                      name="username"
-                      id="username"
-                      autoComplete="username"
+                      name="ens"
+                      id="ens"
+                      autoComplete="ens"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
@@ -154,24 +203,22 @@ export default function Form() {
                 )}
                 <span>Personal Information</span>
               </h3>
-              {/* <p className="mt-1 text-sm text-gray-500">
-                Use a permanent address where you can receive mail.
-              </p> */}
             </div>
             {showPersonal && (
               <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="first-name"
+                    htmlFor="firstName"
                     className="block text-sm font-medium text-gray-700"
                   >
                     First name
                   </label>
                   <div className="mt-1">
                     <input
+                      {...register('firstName')}
                       type="text"
-                      name="first-name"
-                      id="first-name"
+                      name="firstName"
+                      id="firstName"
                       autoComplete="given-name"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
@@ -180,16 +227,17 @@ export default function Form() {
 
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="last-name"
+                    htmlFor="lastName"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Last name
                   </label>
                   <div className="mt-1">
                     <input
+                      {...register('lastName')}
                       type="text"
-                      name="last-name"
-                      id="last-name"
+                      name="lastName"
+                      id="lastName"
                       autoComplete="family-name"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
@@ -205,6 +253,7 @@ export default function Form() {
                   </label>
                   <div className="mt-1">
                     <input
+                      {...register('email')}
                       id="email"
                       name="email"
                       type="email"
@@ -215,21 +264,110 @@ export default function Form() {
                 </div>
                 <div className="sm:col-span-3">
                   <label
-                    htmlFor="last-name"
+                    htmlFor="number"
                     className="block text-sm font-medium text-gray-700"
                   >
                     Phone number
                   </label>
                   <div className="mt-1">
                     <input
+                      {...register('number')}
                       type="text"
-                      name="last-name"
-                      id="last-name"
-                      autoComplete="family-name"
+                      name="number"
+                      id="number"
+                      autoComplete="number"
                       className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
                   </div>
                 </div>
+              </div>
+            )}
+          </div>
+          <div className="pt-8">
+            <div>
+              <h3
+                className="text-lg font-medium leading-6 text-gray-900 flex gap-2 cursor-pointer"
+                onClick={() => setShowPreferences(!showPreferences)}
+              >
+                {showPreferences ? (
+                  <ChevronDownIcon className="h-6" />
+                ) : (
+                  <ChevronRightIcon className="h-6" />
+                )}
+                <span>Preferences</span>
+              </h3>
+            </div>
+            {showPreferences && (
+              <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                {preferencesValues.map((pref) => (
+                  <div
+                    key={pref.key}
+                    className=" border p-4 rounded-md col-span-6 flex flex-col gap-2"
+                  >
+                    <Switch.Group
+                      as="div"
+                      className="flex items-center justify-between col-span-6"
+                    >
+                      <span className="flex flex-grow flex-col">
+                        <Switch.Label
+                          as="span"
+                          className="text-sm font-medium text-gray-900"
+                          passive
+                        >
+                          {pref.title}
+                        </Switch.Label>
+                        <Switch.Description
+                          as="span"
+                          className="text-sm text-gray-500"
+                        >
+                          {pref.description}
+                        </Switch.Description>
+                      </span>
+                      <Switch
+                        checked={preferences[pref.key].allow}
+                        onChange={() => changePreferencesToggle(pref.key)}
+                        className={classNames(
+                          preferences[pref.key].allow
+                            ? 'bg-indigo-600'
+                            : 'bg-gray-200',
+                          'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                        )}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={classNames(
+                            preferences[pref.key].allow
+                              ? 'translate-x-5'
+                              : 'translate-x-0',
+                            'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+                          )}
+                        />
+                      </Switch>
+                    </Switch.Group>
+                    <div className="sm:col-span-3">
+                      <label
+                        htmlFor="first-name"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Exceptions
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          onChange={(e: any) =>
+                            changePreferencesExceptions(e, pref.key)
+                          }
+                          value={preferences[pref.key].exceptions}
+                          placeholder={pref.exceptionsDefault}
+                          type="text"
+                          name="first-name"
+                          id="first-name"
+                          autoComplete="given-name"
+                          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

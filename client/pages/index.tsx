@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import clsx from 'clsx';
 import Tabs from '../components/Tabs';
 import { PlusIcon as PlusIconMini } from '@heroicons/react/20/solid';
@@ -8,6 +8,20 @@ import dracula from 'prism-react-renderer/themes/dracula';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import palenight from 'prism-react-renderer/themes/palenight';
 import Form from '../components/Form';
+import { useForm, SubmitHandler } from 'react-hook-form';
+
+type Inputs = {
+  displayName: string;
+  avatar: string;
+  twitter: string;
+  github: string;
+  reddit: string;
+  ens: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  number: string;
+};
 
 const codeLanguage = 'javascript';
 
@@ -38,48 +52,150 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Home() {
-  const active = 'aqqs...fdg2';
-  const allowPopups = true;
+type PreferencesType = {
+  popups: {
+    allow: boolean;
+    exceptions: string[];
+  };
+  darkMode: {
+    allow: boolean;
+    exceptions: string[];
+  };
+  sessionCookies: {
+    allow: boolean;
+    exceptions: string[];
+  };
+  persistentCookies: {
+    allow: boolean;
+    exceptions: string[];
+  };
+  thirdPartyCookies: {
+    allow: boolean;
+    exceptions: string[];
+  };
+};
 
-  const code2 = `{
+const preferenceDefaults = {
+  popups: {
+    allow: true,
+    exceptions: [],
+  },
+  darkMode: {
+    allow: false,
+    exceptions: [],
+  },
+  sessionCookies: {
+    allow: false,
+    exceptions: [],
+  },
+  persistentCookies: {
+    allow: false,
+    exceptions: [],
+  },
+  thirdPartyCookies: {
+    allow: false,
+    exceptions: [],
+  },
+};
+
+export default function Home() {
+  const [preferences, setPreferences] =
+    useState<PreferencesType>(preferenceDefaults);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  const active = 'aqqs...fdg2';
+  const avatar = 'ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png';
+
+  const changePreferencesToggle = (
+    key:
+      | 'popups'
+      | 'darkMode'
+      | 'sessionCookies'
+      | 'persistentCookies'
+      | 'thirdPartyCookies'
+  ) => {
+    let prevAllow = preferences[key].allow;
+    let prevExceptions = preferences[key].exceptions;
+
+    setPreferences((prevPreferences) => {
+      return {
+        ...prevPreferences,
+        [key]: {
+          allow: !prevAllow,
+          exceptions: prevExceptions,
+        },
+      };
+    });
+  };
+
+  const changePreferencesExceptions = (
+    e: any,
+    key:
+      | 'popups'
+      | 'darkMode'
+      | 'sessionCookies'
+      | 'persistentCookies'
+      | 'thirdPartyCookies'
+  ) => {
+    console.log(e.target.value);
+    let prevAllow = preferences[key].allow;
+    let exceptions = e.target.value;
+
+    setPreferences((prevPreferences) => {
+      return {
+        ...prevPreferences,
+        [key]: {
+          allow: prevAllow,
+          exceptions: exceptions,
+        },
+      };
+    });
+  };
+
+  const code = `{ 
     "profile": {
-      "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
-      "displayName": "hassebacke",
+      "avatar": "${avatar}",
+      "displayName": "${watch('displayName')}",
       "social": {
-        "twitter": "",
-        "github": "",
-        "instagram": "",
-        "ens": ""
+        "twitter": "${watch('twitter')}",
+        "github": "${watch('github')}",
+        "reddit": "${watch('reddit')}",
+        "ens": "${watch('ens')}"
       }
     },
     "personal": {
-      "firstName": "Hasse",
-      "lastName": "Backe",
-      "email": "hassebacke@proton.me",
-      "phoneNumber": "132214072394"
+      "firstName": "${watch('firstName')}",
+      "lastName": "${watch('lastName')}",
+      "email": "${watch('email')}",
+      "phoneNumber": "${watch('number')}"
     },
     "preferences": {
-      "darkMode": {
-        "allow": true,
-        "exceptions": []
-      },
       "popups": {
-        "allow": true,
-        "exceptions": []
+        "allow": ${preferences.popups.allow},
+        "exceptions": "${preferences.popups.exceptions}"
+      },
+      "darkMode": {
+        "allow": ${preferences.darkMode.allow},
+        "exceptions": "${preferences.darkMode.exceptions}"
       },
       "cookies": {
         "sessionCookies": {
-          "allow": true,
-          "exceptions": []
+          "allow": ${preferences.sessionCookies.allow},
+          "exceptions": "${preferences.sessionCookies.exceptions}"
         },
         "persistentCookies": {
-          "allow": true,
-          "exceptions": ["https://facebook.com/*"]
+          "allow": ${preferences.persistentCookies.allow},
+          "exceptions": "${preferences.persistentCookies.exceptions}"
         },
         "thirdPartyCookies": {
-          "allow": false,
-          "exceptions": []
+          "allow": ${preferences.thirdPartyCookies.allow},
+          "exceptions": "${preferences.thirdPartyCookies.exceptions}"
         }
       }
     }
@@ -148,7 +264,12 @@ export default function Home() {
         <div className="top-24 mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-screen-2xl lg:grid-cols-12 lg:gap-8 lg:px-8">
           <div className="col-span-9 lg:col-span-6 block">
             <div className="top-40 p-2 h-[40rem] overflow-y-scroll">
-              <Form />
+              <Form
+                register={register}
+                preferences={preferences}
+                changePreferencesToggle={changePreferencesToggle}
+                changePreferencesExceptions={changePreferencesExceptions}
+              />
             </div>
           </div>
           <div className="col-span-3 lg:col-span-6 block h-[36rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
@@ -165,7 +286,7 @@ export default function Home() {
                       className="select-none border-r border-slate-300/5 pr-4 font-mono text-slate-600"
                     >
                       {Array.from({
-                        length: code2.split('\n').length,
+                        length: code.split('\n').length,
                       }).map((_, index) => (
                         <Fragment key={index}>
                           {(index + 1).toString().padStart(2, '0')}
@@ -175,7 +296,7 @@ export default function Home() {
                     </div>
                     <Highlight
                       {...defaultProps}
-                      code={code2}
+                      code={code}
                       language={codeLanguage}
                       theme={nightOwl}
                     >
