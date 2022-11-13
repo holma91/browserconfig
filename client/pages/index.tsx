@@ -7,15 +7,9 @@ import Highlight, { defaultProps } from 'prism-react-renderer';
 import dracula from 'prism-react-renderer/themes/dracula';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import palenight from 'prism-react-renderer/themes/palenight';
+import Form from '../components/Form';
 
 const codeLanguage = 'javascript';
-const code = `export default {
-  strategy: 'predictive',
-  engine: {
-    cpus: 12,
-    backups: ['./storage/cache.wtf'],
-  },
-}`;
 
 function TrafficLightsIcon(props: any) {
   return (
@@ -50,42 +44,47 @@ export default function Home() {
 
   const code2 = `{
     "profile": {
-      "popups": ${allowPopups},
       "avatar": "ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png",
-      "firstName": "Hasse",
-      "lastName": "Backe",
       "displayName": "hassebacke",
-      "email": "hassebacke@proton.me",
-      "phoneNumber": "132214072394",
       "social": {
         "twitter": "",
         "github": "",
-        "instagram": ""
+        "instagram": "",
+        "ens": ""
       }
     },
-    "cookies": {
-      "sessionCookies": {
+    "personal": {
+      "firstName": "Hasse",
+      "lastName": "Backe",
+      "email": "hassebacke@proton.me",
+      "phoneNumber": "132214072394"
+    },
+    "preferences": {
+      "darkMode": {
         "allow": true,
         "exceptions": []
       },
-      "sessionCookies": {
+      "popups": {
         "allow": true,
         "exceptions": []
       },
-      "sessionCookies": {
-        "allow": true,
-        "exceptions": []
-      },
-      "sessionCookies": {
-        "allow": true,
-        "exceptions": []
-      },
-      "persistentCookies": {
-        "allow": true,
-        "exceptions": ["https://facebook.com/*"]
+      "cookies": {
+        "sessionCookies": {
+          "allow": true,
+          "exceptions": []
+        },
+        "persistentCookies": {
+          "allow": true,
+          "exceptions": ["https://facebook.com/*"]
+        },
+        "thirdPartyCookies": {
+          "allow": false,
+          "exceptions": []
+        }
       }
     }
   }
+  
   `;
 
   return (
@@ -98,6 +97,26 @@ export default function Home() {
       <div className="p-5 flex justify-center sticky top-[4rem] z-10 w-full bg-white border-b ">
         <div>
           <div className="flex items-center font-medium">
+            <p className="mr-3">active config:</p>
+            <nav className="flex space-x-4 mr-5" aria-label="Tabs">
+              {tabs.slice(0, 1).map((tab) => (
+                <a
+                  key={tabs[2].name}
+                  href={tabs[2].href}
+                  className={classNames(
+                    tabs[2].name === active
+                      ? 'bg-green-100 text-gray-700'
+                      : tabs[2].current
+                      ? 'bg-gray-100 text-gray-700'
+                      : 'text-gray-500 hover:text-gray-700',
+                    'px-3 py-2 font-medium text-sm rounded-md'
+                  )}
+                  aria-current={tabs[2].current ? 'page' : undefined}
+                >
+                  {tabs[2].name}
+                </a>
+              ))}
+            </nav>
             <p>default configs:</p>
             <nav className="flex space-x-4" aria-label="Tabs">
               {tabs.map((tab) => (
@@ -105,9 +124,7 @@ export default function Home() {
                   key={tab.name}
                   href={tab.href}
                   className={classNames(
-                    tab.name === active
-                      ? 'bg-green-100 text-gray-700'
-                      : tab.current
+                    tab.current
                       ? 'bg-gray-100 text-gray-700'
                       : 'text-gray-500 hover:text-gray-700',
                     'px-3 py-2 font-medium text-sm rounded-md'
@@ -130,10 +147,8 @@ export default function Home() {
       <div className="py-6 top-24">
         <div className="top-24 mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-screen-2xl lg:grid-cols-12 lg:gap-8 lg:px-8">
           <div className="col-span-9 lg:col-span-6 block">
-            <div className="top-40 border p-2 h-[40rem] overflow-y-scroll">
-              {[...new Array(75)].map((a) => (
-                <p key={a}>ya</p>
-              ))}
+            <div className="top-40 p-2 h-[40rem] overflow-y-scroll">
+              <Form />
             </div>
           </div>
           <div className="col-span-3 lg:col-span-6 block h-[36rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
