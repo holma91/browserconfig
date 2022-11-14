@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import { Fragment, useState } from 'react';
 import clsx from 'clsx';
+import { Switch } from '@headlessui/react';
 import { Web3Storage } from 'web3.storage';
 import Highlight, { defaultProps } from 'prism-react-renderer';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import Form from '../components/Form';
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -93,7 +95,9 @@ const formatExceptions = (exceptions: string) => {
 export default function Home() {
   const [avatar, setAvatar] = useState('');
   const [avatarHash, setAvatarHash] = useState('');
-  // const [configHash, setConfigHash] = useState('');
+  const [configCid, setConfigCid] = useState('');
+  const [uploadedConfig, setUploadedConfig] = useState('');
+  const [isPinning, setIsPinning] = useState(false);
   const [preferences, setPreferences] =
     useState<PreferencesType>(preferenceDefaults);
   const {
@@ -176,7 +180,7 @@ export default function Home() {
 
   const config = `{ 
     "profile": {
-      "avatar": "ipfs://${avatarHash}",
+      "avatar": "${avatarHash && 'ipfs://'}${avatarHash}",
       "displayName": "${watch('displayName')}",
       "social": {
         "twitter": "${watch('twitter')}",
@@ -225,23 +229,38 @@ export default function Home() {
   
   `;
 
-  const configHash = '';
-
-  const uploadToIpfs = async () => {
-    // get the JSON metadata
-    // upload to ipfs
-    // save the last uploaded ipfs value in state
-    console.log('ayooo');
+  const pinOnIpfs = async () => {
+    setIsPinning(true);
 
     const client = new Web3Storage({
       token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
     });
-    // console.log(client);
+    const blob = new Blob([config], {
+      type: 'application/json',
+    });
+    const files = [
+      new File(['contents-of-file-1'], 'plain-utf8.txt'),
+      new File([blob], 'config.json'),
+    ];
+    const rootCid = await client.put(files, {
+      name: 'config',
+      maxRetries: 3,
+      wrapWithDirectory: false,
+    });
+
+    setConfigCid(rootCid);
+    setUploadedConfig(config);
+    setIsPinning(false);
   };
 
   const activateConfig = () => {
     // check if uploaded to ipfs
     // save hash in local storage
+    console.log('activating....');
+    // if localstorage cid === configCid, then it's activated. otherwise not
+    window.localStorage.setItem('browserconfigCID', configCid);
+    const localConfig = window.localStorage.getItem('browserconfigCID');
+    console.log(localConfig);
   };
 
   return (
@@ -316,9 +335,9 @@ export default function Home() {
             </div>
           </div>
           <div className="col-span-3 lg:col-span-6 flex flex-col gap-3">
-            <div className=" block h-[29rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
+            <div className=" block h-[29rem] overflow-y-scroll rounded-xl bg-[#011627] ring-1 ring-white/10">
               <div className="sticky top-40 p-2">
-                <div className="relative rounded-2xl bg-[#011627]  backdrop-blur p-1">
+                <div className="relative rounded-xl bg-[#011627]  backdrop-blur p-1">
                   <div className="pl-4">
                     <div className="mt-6 flex items-start px-1 text-sm">
                       {/* Line numbers below */}
@@ -379,33 +398,61 @@ export default function Home() {
               </div>
             </div>
             <div className="bg-white border rounded-lg">
-              <div className="px-4 py-5 sm:p-6">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  IPFS config hash: {configHash}
-                </h3>
-                <div className="mt-2 max-w-xl text-sm text-gray-500">
-                  <p>
-                    Once you delete your account, you will lose all data
-                    associated with it.
-                  </p>
+              {uploadedConfig === config ? (
+                <>
+                  <div className="rounded-md bg-green-50 px-4 py-5">
+                    <div className="flex">
+                      <div className="flex-shrink-0">
+                        <CheckCircleIcon
+                          className="h-5 w-5 text-green-400"
+                          aria-hidden="true"
+                        />
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-green-800">
+                          Config pinned on ipfs
+                        </h3>
+                        <div className="mt-2 text-sm text-green-700">
+                          <p>
+                            CID: <strong>{configCid}</strong>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-5 ml-8 flex items-center gap-4">
+                      <button
+                        onClick={activateConfig}
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                      >
+                        Activate config
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="px-4 py-5 sm:p-6">
+                  <h3 className="text-lg font-medium leading-6 text-gray-900">
+                    IPFS Content ID:{' '}
+                    {uploadedConfig === config ? configCid : ''}
+                  </h3>
+                  <div className="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>
+                      Once you delete your account, you will lose all data
+                      associated with it.
+                    </p>
+                  </div>
+                  <div className="mt-5 flex items-center gap-4">
+                    <button
+                      onClick={pinOnIpfs}
+                      type="button"
+                      className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                    >
+                      {isPinning ? 'Pinning' : 'Pin on IPFS'}
+                    </button>
+                  </div>
                 </div>
-                <div className="mt-5 flex items-center gap-4">
-                  <button
-                    onClick={uploadToIpfs}
-                    type="button"
-                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                  >
-                    Upload to IPFS
-                  </button>
-                  <button
-                    onClick={activateConfig}
-                    type="button"
-                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                  >
-                    Activate Config
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
