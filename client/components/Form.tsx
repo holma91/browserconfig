@@ -2,6 +2,8 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { Switch } from '@headlessui/react';
+import { Web3Storage } from 'web3.storage';
+
 function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
@@ -45,24 +47,19 @@ export default function Form({
   preferences,
   changePreferencesToggle,
   changePreferencesExceptions,
+  onImageUpload,
+  avatar,
 }: {
   register: any;
   preferences: any;
   changePreferencesToggle: any;
   changePreferencesExceptions: any;
+  onImageUpload: any;
+  avatar: string;
 }) {
   const [showProfile, setShowProfile] = useState(true);
   const [showPersonal, setShowPersonal] = useState(true);
   const [showPreferences, setShowPreferences] = useState(true);
-  const [avatar, setAvatar] = useState('');
-
-  const onImageUpload = (e: any) => {
-    const image = URL.createObjectURL(e.target.files[0]);
-
-    // upload image to IPFS
-
-    setAvatar(image);
-  };
 
   return (
     <form className="space-y-8 divide-y divide-gray-200">

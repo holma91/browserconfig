@@ -1,12 +1,9 @@
 import Head from 'next/head';
 import { Fragment, useState } from 'react';
 import clsx from 'clsx';
-import Tabs from '../components/Tabs';
-import { PlusIcon as PlusIconMini } from '@heroicons/react/20/solid';
+import { Web3Storage } from 'web3.storage';
 import Highlight, { defaultProps } from 'prism-react-renderer';
-import dracula from 'prism-react-renderer/themes/dracula';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
-import palenight from 'prism-react-renderer/themes/palenight';
 import Form from '../components/Form';
 import { useForm, SubmitHandler } from 'react-hook-form';
 
@@ -45,50 +42,58 @@ function classNames(...classes: any[]) {
 type PreferencesType = {
   popups: {
     allow: boolean;
-    exceptions: string[];
+    exceptions: string;
   };
   darkMode: {
     allow: boolean;
-    exceptions: string[];
+    exceptions: string;
   };
   sessionCookies: {
     allow: boolean;
-    exceptions: string[];
+    exceptions: string;
   };
   persistentCookies: {
     allow: boolean;
-    exceptions: string[];
+    exceptions: string;
   };
   thirdPartyCookies: {
     allow: boolean;
-    exceptions: string[];
+    exceptions: string;
   };
 };
 
 const preferenceDefaults = {
   popups: {
     allow: true,
-    exceptions: [],
+    exceptions: '',
   },
   darkMode: {
     allow: false,
-    exceptions: [],
+    exceptions: '',
   },
   sessionCookies: {
     allow: false,
-    exceptions: [],
+    exceptions: '',
   },
   persistentCookies: {
     allow: false,
-    exceptions: [],
+    exceptions: '',
   },
   thirdPartyCookies: {
     allow: false,
-    exceptions: [],
+    exceptions: '',
   },
 };
 
+const formatExceptions = (exceptions: string) => {
+  let list = exceptions.replace(/\s+/g, '').split(',');
+  return JSON.stringify(list);
+};
+
 export default function Home() {
+  const [avatar, setAvatar] = useState('');
+  const [avatarHash, setAvatarHash] = useState('');
+  // const [configHash, setConfigHash] = useState('');
   const [preferences, setPreferences] =
     useState<PreferencesType>(preferenceDefaults);
   const {
@@ -100,7 +105,6 @@ export default function Home() {
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
 
   const active = 'aqqs...fdg2';
-  const avatar = 'ipfs://famdsfnasdfcdsafsadfasdcsdsdcdcad.png';
 
   const changePreferencesToggle = (
     key:
@@ -148,9 +152,31 @@ export default function Home() {
     });
   };
 
-  const code = `{ 
+  const onImageUpload = async (e: any) => {
+    const image = URL.createObjectURL(e.target.files[0]);
+    setAvatar(image);
+
+    console.log(image);
+    console.log(e.target.files[0]);
+
+    // upload image to IPFS
+    const client = new Web3Storage({
+      token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
+    });
+
+    const rootCid = await client.put(e.target.files, {
+      name: 'avatar',
+      maxRetries: 3,
+      wrapWithDirectory: false,
+    });
+
+    console.log(rootCid);
+    setAvatarHash(rootCid);
+  };
+
+  const config = `{ 
     "profile": {
-      "avatar": "${avatar}",
+      "avatar": "ipfs://${avatarHash}",
       "displayName": "${watch('displayName')}",
       "social": {
         "twitter": "${watch('twitter')}",
@@ -168,24 +194,30 @@ export default function Home() {
     "preferences": {
       "popups": {
         "allow": ${preferences.popups.allow},
-        "exceptions": "${preferences.popups.exceptions}"
+        "exceptions": ${formatExceptions(preferences.popups.exceptions)}
       },
       "darkMode": {
         "allow": ${preferences.darkMode.allow},
-        "exceptions": "${preferences.darkMode.exceptions}"
+        "exceptions": ${formatExceptions(preferences.darkMode.exceptions)}
       },
       "cookies": {
         "sessionCookies": {
           "allow": ${preferences.sessionCookies.allow},
-          "exceptions": "${preferences.sessionCookies.exceptions}"
+          "exceptions": ${formatExceptions(
+            preferences.sessionCookies.exceptions
+          )}
         },
         "persistentCookies": {
           "allow": ${preferences.persistentCookies.allow},
-          "exceptions": "${preferences.persistentCookies.exceptions}"
+          "exceptions": ${formatExceptions(
+            preferences.persistentCookies.exceptions
+          )}
         },
         "thirdPartyCookies": {
           "allow": ${preferences.thirdPartyCookies.allow},
-          "exceptions": "${preferences.thirdPartyCookies.exceptions}"
+          "exceptions": ${formatExceptions(
+            preferences.thirdPartyCookies.exceptions
+          )}
         }
       }
     }
@@ -193,10 +225,18 @@ export default function Home() {
   
   `;
 
-  const uploadToIpfs = () => {
+  const configHash = '';
+
+  const uploadToIpfs = async () => {
     // get the JSON metadata
     // upload to ipfs
     // save the last uploaded ipfs value in state
+    console.log('ayooo');
+
+    const client = new Web3Storage({
+      token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
+    });
+    // console.log(client);
   };
 
   const activateConfig = () => {
@@ -270,6 +310,8 @@ export default function Home() {
                 preferences={preferences}
                 changePreferencesToggle={changePreferencesToggle}
                 changePreferencesExceptions={changePreferencesExceptions}
+                onImageUpload={onImageUpload}
+                avatar={avatar}
               />
             </div>
           </div>
@@ -285,7 +327,7 @@ export default function Home() {
                         className="select-none border-r border-slate-300/5 pr-4 font-mono text-slate-600"
                       >
                         {Array.from({
-                          length: code.split('\n').length,
+                          length: config.split('\n').length,
                         }).map((_, index) => (
                           <Fragment key={index}>
                             {(index + 1).toString().padStart(2, '0')}
@@ -295,7 +337,7 @@ export default function Home() {
                       </div>
                       <Highlight
                         {...defaultProps}
-                        code={code}
+                        code={config}
                         language={codeLanguage}
                         theme={nightOwl}
                       >
@@ -339,7 +381,7 @@ export default function Home() {
             <div className="bg-white border rounded-lg">
               <div className="px-4 py-5 sm:p-6">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  IPFS config hash: qasdhaskld3ssad42gfh42g3lsbfda
+                  IPFS config hash: {configHash}
                 </h3>
                 <div className="mt-2 max-w-xl text-sm text-gray-500">
                   <p>
