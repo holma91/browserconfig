@@ -25,16 +25,6 @@ type Inputs = {
 
 const codeLanguage = 'javascript';
 
-function TrafficLightsIcon(props: any) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 42 10" fill="none" {...props}>
-      <circle cx="5" cy="5" r="4.5" />
-      <circle cx="21" cy="5" r="4.5" />
-      <circle cx="37" cy="5" r="4.5" />
-    </svg>
-  );
-}
-
 const tabs = [
   {
     name: 'mtwi...p46a',
@@ -203,6 +193,17 @@ export default function Home() {
   
   `;
 
+  const uploadToIpfs = () => {
+    // get the JSON metadata
+    // upload to ipfs
+    // save the last uploaded ipfs value in state
+  };
+
+  const activateConfig = () => {
+    // check if uploaded to ipfs
+    // save hash in local storage
+  };
+
   return (
     <div>
       <Head>
@@ -272,64 +273,95 @@ export default function Home() {
               />
             </div>
           </div>
-          <div className="col-span-3 lg:col-span-6 block h-[36rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
-            <div className="sticky top-40 p-2">
-              <div className="relative rounded-2xl bg-[#011627]  backdrop-blur p-1">
-                {/* <div className="absolute -top-px left-20 right-11 h-px bg-gradient-to-r from-sky-300/0 via-sky-300/70 to-sky-300/0" /> */}
-                {/* <div className="absolute -bottom-px left-11 right-20 h-px bg-gradient-to-r from-blue-400/0 via-blue-400 to-blue-400/0" /> */}
-                <div className="pl-4">
-                  {/* <TrafficLightsIcon className="h-2.5 w-auto stroke-slate-500/30" /> */}
-                  <div className="mt-6 flex items-start px-1 text-sm">
-                    {/* Line numbers below */}
-                    <div
-                      aria-hidden="true"
-                      className="select-none border-r border-slate-300/5 pr-4 font-mono text-slate-600"
-                    >
-                      {Array.from({
-                        length: code.split('\n').length,
-                      }).map((_, index) => (
-                        <Fragment key={index}>
-                          {(index + 1).toString().padStart(2, '0')}
-                          <br />
-                        </Fragment>
-                      ))}
+          <div className="col-span-3 lg:col-span-6 flex flex-col gap-3">
+            <div className=" block h-[29rem] overflow-y-scroll rounded-2xl bg-[#011627] ring-1 ring-white/10">
+              <div className="sticky top-40 p-2">
+                <div className="relative rounded-2xl bg-[#011627]  backdrop-blur p-1">
+                  <div className="pl-4">
+                    <div className="mt-6 flex items-start px-1 text-sm">
+                      {/* Line numbers below */}
+                      <div
+                        aria-hidden="true"
+                        className="select-none border-r border-slate-300/5 pr-4 font-mono text-slate-600"
+                      >
+                        {Array.from({
+                          length: code.split('\n').length,
+                        }).map((_, index) => (
+                          <Fragment key={index}>
+                            {(index + 1).toString().padStart(2, '0')}
+                            <br />
+                          </Fragment>
+                        ))}
+                      </div>
+                      <Highlight
+                        {...defaultProps}
+                        code={code}
+                        language={codeLanguage}
+                        theme={nightOwl}
+                      >
+                        {({
+                          className,
+                          style,
+                          tokens,
+                          getLineProps,
+                          getTokenProps,
+                        }) => (
+                          <pre
+                            className={clsx(
+                              className,
+                              'flex overflow-x-auto pb-6'
+                            )}
+                            style={style}
+                          >
+                            <code className="px-4">
+                              {tokens.map((line, lineIndex) => (
+                                <div
+                                  key={lineIndex}
+                                  {...getLineProps({ line })}
+                                >
+                                  {line.map((token, tokenIndex) => (
+                                    <span
+                                      key={tokenIndex}
+                                      {...getTokenProps({ token })}
+                                    />
+                                  ))}
+                                </div>
+                              ))}
+                            </code>
+                          </pre>
+                        )}
+                      </Highlight>
                     </div>
-                    <Highlight
-                      {...defaultProps}
-                      code={code}
-                      language={codeLanguage}
-                      theme={nightOwl}
-                    >
-                      {({
-                        className,
-                        style,
-                        tokens,
-                        getLineProps,
-                        getTokenProps,
-                      }) => (
-                        <pre
-                          className={clsx(
-                            className,
-                            'flex overflow-x-auto pb-6'
-                          )}
-                          style={style}
-                        >
-                          <code className="px-4">
-                            {tokens.map((line, lineIndex) => (
-                              <div key={lineIndex} {...getLineProps({ line })}>
-                                {line.map((token, tokenIndex) => (
-                                  <span
-                                    key={tokenIndex}
-                                    {...getTokenProps({ token })}
-                                  />
-                                ))}
-                              </div>
-                            ))}
-                          </code>
-                        </pre>
-                      )}
-                    </Highlight>
                   </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white border rounded-lg">
+              <div className="px-4 py-5 sm:p-6">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  IPFS config hash: qasdhaskld3ssad42gfh42g3lsbfda
+                </h3>
+                <div className="mt-2 max-w-xl text-sm text-gray-500">
+                  <p>
+                    Once you delete your account, you will lose all data
+                    associated with it.
+                  </p>
+                </div>
+                <div className="mt-5 flex items-center gap-4">
+                  <button
+                    onClick={uploadToIpfs}
+                    type="button"
+                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                  >
+                    Upload to IPFS
+                  </button>
+                  <button
+                    onClick={activateConfig}
+                    type="button"
+                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                  >
+                    Activate Config
+                  </button>
                 </div>
               </div>
             </div>

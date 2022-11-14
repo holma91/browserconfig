@@ -54,6 +54,15 @@ export default function Form({
   const [showProfile, setShowProfile] = useState(true);
   const [showPersonal, setShowPersonal] = useState(true);
   const [showPreferences, setShowPreferences] = useState(true);
+  const [avatar, setAvatar] = useState('');
+
+  const onImageUpload = (e: any) => {
+    const image = URL.createObjectURL(e.target.files[0]);
+
+    // upload image to IPFS
+
+    setAvatar(image);
+  };
 
   return (
     <form className="space-y-8 divide-y divide-gray-200">
@@ -74,8 +83,41 @@ export default function Form({
           </div>
           {showProfile && (
             <div className="mt-6 grid grid-cols-2 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div className="col-span-6">
+                <div className="sm:col-span-6">
+                  <label
+                    htmlFor="photo"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Avatar
+                  </label>
+                  <div className="flex gap-4 items-center">
+                    <div className="mt-1 flex items-center">
+                      <span className="h-12 w-12 overflow-hidden rounded-full bg-gray-100">
+                        {avatar ? (
+                          <img src={avatar} alt=""></img>
+                        ) : (
+                          <svg
+                            className="h-full w-full text-gray-300"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                        )}
+                      </span>
+                    </div>
+                    <input
+                      type="file"
+                      accept=".jpg, .jpeg, .png"
+                      className=""
+                      onChange={onImageUpload}
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="sm:col-span-6 grid grid-cols-6 gap-6 items-center">
-                <div className="col-span-4">
+                <div className="col-span-6">
                   <label
                     htmlFor="displayName"
                     className="block text-sm font-medium text-gray-700"
@@ -91,33 +133,6 @@ export default function Form({
                       autoComplete="displayName"
                       className="block w-full min-w-0 flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     />
-                  </div>
-                </div>
-                <div className="col-span-2">
-                  <div className="sm:col-span-3">
-                    <label
-                      htmlFor="photo"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Avatar
-                    </label>
-                    <div className="mt-1 flex items-center">
-                      <span className="h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-                        <svg
-                          className="h-full w-full text-gray-300"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                      </span>
-                      <button
-                        type="button"
-                        className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      >
-                        Change
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
