@@ -94,11 +94,13 @@ const formatExceptions = (exceptions: string) => {
 };
 
 export default function Home() {
-  const { data, isLoading, isError } = useBrowserConfig('google.com');
+  const { data: browserConfig, refetch: refetchBrowserConfig } =
+    useBrowserConfig('google.com');
   const [avatar, setAvatar] = useState('');
   const [avatarHash, setAvatarHash] = useState('');
   const [configCid, setConfigCid] = useState('');
   const [uploadedConfig, setUploadedConfig] = useState('');
+  const [activatedConfig, setActivatedConfig] = useState('');
   const [isPinning, setIsPinning] = useState(false);
   const [preferences, setPreferences] =
     useState<PreferencesType>(preferenceDefaults);
@@ -112,7 +114,7 @@ export default function Home() {
 
   const active = 'aqqs...fdg2';
 
-  console.log('data:', data);
+  console.log('data:', browserConfig);
 
   const changePreferencesToggle = (
     key:
@@ -258,13 +260,13 @@ export default function Home() {
   };
 
   const activateConfig = () => {
-    // check if uploaded to ipfs
-    // save hash in local storage
-    console.log('activating....');
-    // if localstorage cid === configCid, then it's activated. otherwise not
     window.localStorage.setItem('browserconfigCID', configCid);
     const localConfig = window.localStorage.getItem('browserconfigCID');
     console.log(localConfig);
+    setActivatedConfig(config);
+
+    // update UI
+    refetchBrowserConfig();
   };
 
   return (
@@ -279,25 +281,20 @@ export default function Home() {
           <div className="flex items-center font-medium">
             <p className="mr-3">active config:</p>
             <nav className="flex space-x-4 mr-5" aria-label="Tabs">
-              {tabs.slice(0, 1).map((tab) => (
-                <a
-                  key={tabs[2].name}
-                  href={tabs[2].href}
-                  className={classNames(
-                    tabs[2].name === active
-                      ? 'bg-green-100 text-gray-700'
-                      : tabs[2].current
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'text-gray-500 hover:text-gray-700',
-                    'px-3 py-2 font-medium text-sm rounded-md'
-                  )}
-                  aria-current={tabs[2].current ? 'page' : undefined}
-                >
-                  {tabs[2].name}
-                </a>
-              ))}
+              <a
+                href={
+                  browserConfig
+                    ? `https://${browserConfig.cid}.ipfs.w3s.link`
+                    : '#'
+                }
+                className="bg-green-100 text-gray-700 hover:text-gray-700 px-3 py-2 font-medium text-sm rounded-md"
+                target="_blank"
+                rel="noreferrer"
+              >
+                {browserConfig ? browserConfig.cid : 'none'}
+              </a>
             </nav>
-            <p>default configs:</p>
+            {/* <p>default configs:</p>
             <nav className="flex space-x-4" aria-label="Tabs">
               {tabs.map((tab) => (
                 <a
@@ -314,7 +311,7 @@ export default function Home() {
                   {tab.name}
                 </a>
               ))}
-            </nav>
+            </nav> */}
             {/* <button
               type="button"
               className="inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 h-7 w-7 ml-2"
@@ -404,7 +401,7 @@ export default function Home() {
             <div className="bg-white border rounded-lg">
               {uploadedConfig === config ? (
                 <>
-                  <div className="rounded-md bg-green-50 px-4 py-5">
+                  <div className="rounded-md bg-green-50 px-4 py-5 flex flex-col gap-2">
                     <div className="flex">
                       <div className="flex-shrink-0">
                         <CheckCircleIcon
@@ -416,34 +413,55 @@ export default function Home() {
                         <h3 className="text-sm font-medium text-green-800">
                           Config pinned on ipfs
                         </h3>
-                        <div className="mt-2 text-sm text-green-700">
+                        <div className="mt-1 text-sm text-green-700">
                           <p>
                             CID: <strong>{configCid}</strong>
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="mt-5 ml-8 flex items-center gap-4">
-                      <button
-                        onClick={activateConfig}
-                        type="button"
-                        className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                      >
-                        Activate config
-                      </button>
-                    </div>
+                    {activatedConfig === config ? (
+                      <div className="flex">
+                        <div className="flex-shrink-0">
+                          <CheckCircleIcon
+                            className="h-5 w-5 text-green-400"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="text-sm font-medium text-green-800">
+                            Config activated
+                          </h3>
+                          <div className="mt-1 text-sm text-green-700">
+                            <p>
+                              Every website that integrates browserconfig.xyz
+                              will now use this config.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mt-5 ml-8 flex items-center gap-4">
+                        <button
+                          onClick={activateConfig}
+                          type="button"
+                          className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 font-medium text-black hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
+                        >
+                          Activate config
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </>
               ) : (
                 <div className="px-4 py-5 sm:p-6">
                   <h3 className="text-lg font-medium leading-6 text-gray-900">
-                    IPFS Content ID:{' '}
+                    Your new config
                     {uploadedConfig === config ? configCid : ''}
                   </h3>
                   <div className="mt-2 max-w-xl text-sm text-gray-500">
                     <p>
-                      Once you delete your account, you will lose all data
-                      associated with it.
+                      To activate your config, you first need to pin it on ipfs.
                     </p>
                   </div>
                   <div className="mt-5 flex items-center gap-4">
