@@ -13,6 +13,12 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
+      screens: {
+        tall: { raw: '(min-height: 800px)' },
+        tall2: { raw: '(min-height: 850px)' },
+        tall3: { raw: '(min-height: 900px)' },
+        tall4: { raw: '(min-height: 950px)' },
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

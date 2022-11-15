@@ -324,7 +324,7 @@ export default function Home() {
       <div className="py-6 top-24">
         <div className="top-24 mx-auto max-w-3xl sm:px-6 lg:grid lg:max-w-screen-2xl lg:grid-cols-12 lg:gap-8 lg:px-8">
           <div className="col-span-9 lg:col-span-6 block">
-            <div className="top-40 p-2 h-[40rem] overflow-y-scroll">
+            <div className="top-40 p-2 h-[40rem] tall:h-[41rem] tall2:h-[43rem] tall3:h-[45rem] tall4:h-[47rem] overflow-y-scroll">
               <Form
                 register={register}
                 preferences={preferences}
@@ -336,7 +336,7 @@ export default function Home() {
             </div>
           </div>
           <div className="col-span-3 lg:col-span-6 flex flex-col gap-3">
-            <div className=" block h-[29rem] overflow-y-scroll rounded-xl bg-[#011627] ring-1 ring-white/10">
+            <div className="hidden lg:block h-[29rem] overflow-y-scroll rounded-xl bg-[#011627] ring-1 ring-white/10">
               <div className="sticky top-40 p-2">
                 <div className="relative rounded-xl bg-[#011627]  backdrop-blur p-1">
                   <div className="pl-4">
