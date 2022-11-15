@@ -14,7 +14,7 @@ const preferencesValues = [
     description:
       'Let websites know if you accept popups, or if you want them gone',
     exceptionsDefault: 'facebook.com, google.com',
-    key: 'popups',
+    key: 'popUps',
   },
   {
     title: 'Dark Mode',

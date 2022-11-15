@@ -8,6 +8,7 @@ import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import Form from '../components/Form';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import useBrowserConfig from '../hooks/useBrowserConfig';
 
 type Inputs = {
   displayName: string;
@@ -42,7 +43,7 @@ function classNames(...classes: any[]) {
 }
 
 type PreferencesType = {
-  popups: {
+  popUps: {
     allow: boolean;
     exceptions: string;
   };
@@ -65,7 +66,7 @@ type PreferencesType = {
 };
 
 const preferenceDefaults = {
-  popups: {
+  popUps: {
     allow: true,
     exceptions: '',
   },
@@ -93,6 +94,7 @@ const formatExceptions = (exceptions: string) => {
 };
 
 export default function Home() {
+  const { data, isLoading, isError } = useBrowserConfig('google.com');
   const [avatar, setAvatar] = useState('');
   const [avatarHash, setAvatarHash] = useState('');
   const [configCid, setConfigCid] = useState('');
@@ -110,9 +112,11 @@ export default function Home() {
 
   const active = 'aqqs...fdg2';
 
+  console.log('data:', data);
+
   const changePreferencesToggle = (
     key:
-      | 'popups'
+      | 'popUps'
       | 'darkMode'
       | 'sessionCookies'
       | 'persistentCookies'
@@ -135,7 +139,7 @@ export default function Home() {
   const changePreferencesExceptions = (
     e: any,
     key:
-      | 'popups'
+      | 'popUps'
       | 'darkMode'
       | 'sessionCookies'
       | 'persistentCookies'
@@ -196,9 +200,9 @@ export default function Home() {
       "phoneNumber": "${watch('number')}"
     },
     "preferences": {
-      "popups": {
-        "allow": ${preferences.popups.allow},
-        "exceptions": ${formatExceptions(preferences.popups.exceptions)}
+      "popUps": {
+        "allow": ${preferences.popUps.allow},
+        "exceptions": ${formatExceptions(preferences.popUps.exceptions)}
       },
       "darkMode": {
         "allow": ${preferences.darkMode.allow},
