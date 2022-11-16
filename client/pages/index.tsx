@@ -1,14 +1,13 @@
 import Head from 'next/head';
 import { Fragment, useState } from 'react';
 import clsx from 'clsx';
-import { Switch } from '@headlessui/react';
 import { Web3Storage } from 'web3.storage';
 import Highlight, { defaultProps } from 'prism-react-renderer';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import Form from '../components/Form';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import useBrowserConfig from '../hooks/useBrowserConfig';
+import { useForm } from 'react-hook-form';
+import { useBrowserConfig } from 'browserconfig.xyz';
 
 type Inputs = {
   displayName: string;
@@ -22,25 +21,6 @@ type Inputs = {
   email: string;
   number: string;
 };
-
-const codeLanguage = 'javascript';
-
-const tabs = [
-  {
-    name: 'mtwi...p46a',
-    href: '#',
-    current: false,
-  },
-  { name: 'qsfd...pp22', href: '#', current: false },
-  { name: 'aqqs...fdg2', href: '#', current: false },
-  { name: 'lksa...hyuu', href: '#', current: false },
-  { name: 'fsdg...ffgq', href: '#', current: true },
-  { name: 'bb12...ggsq', href: '#', current: false },
-];
-
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 type PreferencesType = {
   popUps: {
@@ -104,17 +84,7 @@ export default function Home() {
   const [isPinning, setIsPinning] = useState(false);
   const [preferences, setPreferences] =
     useState<PreferencesType>(preferenceDefaults);
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-
-  const active = 'aqqs...fdg2';
-
-  console.log('data:', browserConfig);
+  const { register, watch } = useForm<Inputs>();
 
   const changePreferencesToggle = (
     key:
@@ -169,7 +139,6 @@ export default function Home() {
     console.log(image);
     console.log(e.target.files[0]);
 
-    // upload image to IPFS
     const client = new Web3Storage({
       token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
     });
@@ -182,6 +151,40 @@ export default function Home() {
 
     console.log(rootCid);
     setAvatarHash(rootCid);
+  };
+
+  const pinOnIpfs = async () => {
+    setIsPinning(true);
+
+    const client = new Web3Storage({
+      token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
+    });
+    const blob = new Blob([config], {
+      type: 'application/json',
+    });
+    const files = [
+      new File(['contents-of-file-1'], 'plain-utf8.txt'),
+      new File([blob], 'config.json'),
+    ];
+    const rootCid = await client.put(files, {
+      name: 'config',
+      maxRetries: 3,
+      wrapWithDirectory: false,
+    });
+
+    setConfigCid(rootCid);
+    setUploadedConfig(config);
+    setIsPinning(false);
+  };
+
+  const activateConfig = () => {
+    window.localStorage.setItem('browserconfigCID', configCid);
+    const localConfig = window.localStorage.getItem('browserconfigCID');
+    console.log(localConfig);
+    setActivatedConfig(config);
+
+    // update UI
+    refetchBrowserConfig();
   };
 
   const config = `{ 
@@ -235,40 +238,6 @@ export default function Home() {
   
   `;
 
-  const pinOnIpfs = async () => {
-    setIsPinning(true);
-
-    const client = new Web3Storage({
-      token: process.env.NEXT_PUBLIC_web3storage_api_key as string,
-    });
-    const blob = new Blob([config], {
-      type: 'application/json',
-    });
-    const files = [
-      new File(['contents-of-file-1'], 'plain-utf8.txt'),
-      new File([blob], 'config.json'),
-    ];
-    const rootCid = await client.put(files, {
-      name: 'config',
-      maxRetries: 3,
-      wrapWithDirectory: false,
-    });
-
-    setConfigCid(rootCid);
-    setUploadedConfig(config);
-    setIsPinning(false);
-  };
-
-  const activateConfig = () => {
-    window.localStorage.setItem('browserconfigCID', configCid);
-    const localConfig = window.localStorage.getItem('browserconfigCID');
-    console.log(localConfig);
-    setActivatedConfig(config);
-
-    // update UI
-    refetchBrowserConfig();
-  };
-
   return (
     <div>
       <Head>
@@ -294,30 +263,6 @@ export default function Home() {
                 {browserConfig ? browserConfig.cid : 'none'}
               </a>
             </nav>
-            {/* <p>default configs:</p>
-            <nav className="flex space-x-4" aria-label="Tabs">
-              {tabs.map((tab) => (
-                <a
-                  key={tab.name}
-                  href={tab.href}
-                  className={classNames(
-                    tab.current
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'text-gray-500 hover:text-gray-700',
-                    'px-3 py-2 font-medium text-sm rounded-md'
-                  )}
-                  aria-current={tab.current ? 'page' : undefined}
-                >
-                  {tab.name}
-                </a>
-              ))}
-            </nav> */}
-            {/* <button
-              type="button"
-              className="inline-flex items-center rounded-full border border-transparent bg-indigo-600 p-1 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 h-7 w-7 ml-2"
-            >
-              <PlusIconMini className="h-5 w-5" aria-hidden="true" />
-            </button> */}
           </div>
         </div>
       </div>
@@ -358,7 +303,7 @@ export default function Home() {
                       <Highlight
                         {...defaultProps}
                         code={config}
-                        language={codeLanguage}
+                        language="javascript"
                         theme={nightOwl}
                       >
                         {({
