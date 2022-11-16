@@ -34,6 +34,9 @@ type ConfigType = {
 const fetcher = async (domain: string) => {
   const CID = window.localStorage.getItem('browserconfigCID');
 
+  // get message from extension
+  // listen to message from extension
+
   // use multiple gateways to minimize chance of getting rate limited
   const urls = [
     `https://${CID}.ipfs.w3s.link`,

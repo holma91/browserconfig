@@ -7,7 +7,8 @@ import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import Form from '../components/Form';
 import { useForm } from 'react-hook-form';
-import { useBrowserConfig } from 'browserconfig.xyz';
+// import { useBrowserConfig } from 'browserconfig.xyz';
+import useBrowserConfig from '../hooks/useBrowserConfig';
 
 type Inputs = {
   displayName: string;
@@ -182,6 +183,12 @@ export default function Home() {
     const localConfig = window.localStorage.getItem('browserconfigCID');
     console.log(localConfig);
     setActivatedConfig(config);
+
+    // SET UP "MESSAGE" IN A INVISIBLE IFRAME
+    // POST message to any(*) window
+
+    // store message in extension
+    // post message that extension listens for
 
     // update UI
     refetchBrowserConfig();
