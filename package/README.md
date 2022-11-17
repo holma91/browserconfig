@@ -10,6 +10,19 @@ Install browserconfig and it's dependencies
 npm install browserconfig.xyz react-query
 ```
 
+Then you need to set up react-query, like this
+
+```js
+import { QueryClient, QueryClientProvider } from 'react-query';
+const queryClient = new QueryClient();
+```
+
+And wrap your app like this
+
+```jsx
+<QueryClientProvider client={queryClient}>{your app}</QueryClientProvider>
+```
+
 # Documentation
 
 ```js
