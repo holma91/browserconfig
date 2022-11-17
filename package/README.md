@@ -11,3 +11,10 @@ npm install browserconfig.xyz react-query
 ```
 
 # Documentation
+
+```js
+const yourDomain = 'google.com';
+const { data: browserConfig } = useBrowserConfig(yourDomain);
+```
+
+the variable browserConfig now contains the value that the user configured on browserconfig.xyz!

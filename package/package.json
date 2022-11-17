@@ -1,6 +1,6 @@
 {
   "name": "browserconfig.xyz",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a library exposing hooks that anyone can use to get the browserconfig of a visitor",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
