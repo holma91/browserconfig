@@ -32,7 +32,7 @@ type ConfigType = {
   cid: string;
 };
 
-const extensionId = 'akgoopmhajfnadkgkidedjdmbaomhobo';
+const extensionId = 'kpligipbcoljickbajicdcdbdefgkfnj';
 
 const fetcher = async (domain: string, cid: string) => {
   // use multiple gateways to minimize chance of getting rate limited

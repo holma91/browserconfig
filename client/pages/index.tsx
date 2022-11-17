@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form';
 // import { useBrowserConfig } from 'browserconfig.xyz';
 import useBrowserConfig from '../hooks/useBrowserConfig';
 
-const extensionId = 'akgoopmhajfnadkgkidedjdmbaomhobo';
+const extensionId = 'kpligipbcoljickbajicdcdbdefgkfnj';
 
 type Inputs = {
   displayName: string;
@@ -183,8 +183,6 @@ export default function Home() {
   };
 
   const activateConfig = () => {
-    console.log('configCid', configCid);
-
     try {
       chrome.runtime.sendMessage(extensionId, {
         type: 'set',
@@ -254,6 +252,11 @@ export default function Home() {
   
   `;
 
+  useEffect(() => {
+    if (!browserConfig) return;
+    setActivatedConfigCid(browserConfig.cid);
+  }, [browserConfig]);
+
   return (
     <div>
       <Head>
@@ -268,10 +271,8 @@ export default function Home() {
             <nav className="flex space-x-4 mr-5" aria-label="Tabs">
               <a
                 href={
-                  browserConfig
-                    ? `https://${
-                        activatedConfigCid || browserConfig.cid
-                      }.ipfs.w3s.link`
+                  activatedConfigCid
+                    ? `https://${activatedConfigCid}.ipfs.w3s.link`
                     : '#'
                 }
                 className="bg-green-100 text-gray-700 hover:text-gray-700 px-3 py-2 font-medium text-sm rounded-md"
