@@ -8,8 +8,7 @@ import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import nightOwl from 'prism-react-renderer/themes/nightOwl';
 import Form from '../components/Form';
 import { useForm } from 'react-hook-form';
-// import { useBrowserConfig } from 'browserconfig.xyz';
-import useBrowserConfig from '../hooks/useBrowserConfig';
+import { useBrowserConfig } from 'browserconfig.xyz';
 
 const extensionId = 'kpligipbcoljickbajicdcdbdefgkfnj';
 
