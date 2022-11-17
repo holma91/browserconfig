@@ -1,5 +1,6 @@
+/*global chrome*/
 import Head from 'next/head';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Web3Storage } from 'web3.storage';
 import Highlight, { defaultProps } from 'prism-react-renderer';
@@ -9,6 +10,8 @@ import Form from '../components/Form';
 import { useForm } from 'react-hook-form';
 // import { useBrowserConfig } from 'browserconfig.xyz';
 import useBrowserConfig from '../hooks/useBrowserConfig';
+
+const extensionId = 'akgoopmhajfnadkgkidedjdmbaomhobo';
 
 type Inputs = {
   displayName: string;
@@ -82,6 +85,7 @@ export default function Home() {
   const [configCid, setConfigCid] = useState('');
   const [uploadedConfig, setUploadedConfig] = useState('');
   const [activatedConfig, setActivatedConfig] = useState('');
+  const [activatedConfigCid, setActivatedConfigCid] = useState('');
   const [isPinning, setIsPinning] = useState(false);
   const [preferences, setPreferences] =
     useState<PreferencesType>(preferenceDefaults);
@@ -179,16 +183,21 @@ export default function Home() {
   };
 
   const activateConfig = () => {
-    window.localStorage.setItem('browserconfigCID', configCid);
-    const localConfig = window.localStorage.getItem('browserconfigCID');
-    console.log(localConfig);
+    console.log('configCid', configCid);
+
+    try {
+      chrome.runtime.sendMessage(extensionId, {
+        type: 'set',
+        cid: configCid,
+      });
+    } catch (e) {
+      console.log(
+        'you need to use a chromium browser and download the browserconfig extension!'
+      );
+    }
+
     setActivatedConfig(config);
-
-    // SET UP "MESSAGE" IN A INVISIBLE IFRAME
-    // POST message to any(*) window
-
-    // store message in extension
-    // post message that extension listens for
+    setActivatedConfigCid(configCid);
 
     // update UI
     refetchBrowserConfig();
@@ -260,14 +269,20 @@ export default function Home() {
               <a
                 href={
                   browserConfig
-                    ? `https://${browserConfig.cid}.ipfs.w3s.link`
+                    ? `https://${
+                        activatedConfigCid || browserConfig.cid
+                      }.ipfs.w3s.link`
                     : '#'
                 }
                 className="bg-green-100 text-gray-700 hover:text-gray-700 px-3 py-2 font-medium text-sm rounded-md"
                 target="_blank"
                 rel="noreferrer"
               >
-                {browserConfig ? browserConfig.cid : 'none'}
+                {activatedConfigCid
+                  ? activatedConfigCid
+                  : browserConfig?.cid
+                  ? browserConfig.cid
+                  : 'none'}
               </a>
             </nav>
           </div>

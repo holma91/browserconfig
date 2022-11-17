@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
 type CookieTypes = 'persistentCookies' | 'sessionCookies' | 'thirdPartyCookies';
@@ -31,17 +32,14 @@ type ConfigType = {
   cid: string;
 };
 
-const fetcher = async (domain: string) => {
-  const CID = window.localStorage.getItem('browserconfigCID');
+const extensionId = 'akgoopmhajfnadkgkidedjdmbaomhobo';
 
-  // get message from extension
-  // listen to message from extension
-
+const fetcher = async (domain: string, cid: string) => {
   // use multiple gateways to minimize chance of getting rate limited
   const urls = [
-    `https://${CID}.ipfs.w3s.link`,
-    `https://ipfs.io/ipfs/${CID}`,
-    `https://cloudflare-ipfs.com/ipfs/${CID}`,
+    `https://${cid}.ipfs.w3s.link`,
+    `https://ipfs.io/ipfs/${cid}`,
+    `https://cloudflare-ipfs.com/ipfs/${cid}`,
   ];
   const response = await fetch(urls[Math.floor(Math.random()) * urls.length]);
   const config = await response.json();
@@ -58,7 +56,7 @@ const fetcher = async (domain: string) => {
         thirdPartyCookies: false,
       },
     },
-    cid: CID as string,
+    cid: cid as string,
   };
 
   let preferenceKeys: ('popUps' | 'darkMode')[] = ['popUps', 'darkMode'];
@@ -91,5 +89,27 @@ const fetcher = async (domain: string) => {
 };
 
 export default function useBrowserConfig(domain: string) {
-  return useQuery([domain], () => fetcher(domain));
+  const [cid, setCid] = useState('');
+
+  useEffect(() => {
+    try {
+      chrome.runtime.sendMessage(
+        extensionId,
+        {
+          type: 'get',
+        },
+        function (response: any) {
+          setCid(response.cid || '');
+        }
+      );
+    } catch (e) {
+      console.log(
+        'you need to use a chromium browser and download the browserconfig extension!'
+      );
+    }
+  }, []);
+
+  return useQuery([domain], () => fetcher(domain, cid), {
+    enabled: !!cid,
+  });
 }
